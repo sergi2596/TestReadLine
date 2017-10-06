@@ -37,6 +37,9 @@ class EditableBufferedReader extends BufferedReader{
             if (cr>299){
                 str = Integer.toString(cr);
             }
+            if(cr == 500) {
+            	str = "bueno pues aixo podria ser el suprimir";
+            }
             return str;
         }
         return "";
