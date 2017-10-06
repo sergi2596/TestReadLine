@@ -37,8 +37,9 @@ class EditableBufferedReader extends BufferedReader{
             if (cr>299){
                 str = Integer.toString(cr);
             }
-            if(cr == 500) {
-            	str = "bueno pues aixo podria ser el suprimir";
+
+            if (cr==295) {
+            	str="enviar un suprimir";
             }
             return str;
         }
@@ -47,13 +48,23 @@ class EditableBufferedReader extends BufferedReader{
     @Override
     public int read() throws IOException{
         int cr=0;
-        int auxiliar,auxiliar2;
+        int auxiliar,auxiliar2,auxiliar3;
         cr = super.read(); 
         if (cr == 27){
                 auxiliar = super.read();
                 if (auxiliar == 91){
                     auxiliar2 = super.read();
-                    cr = cr + auxiliar + auxiliar2 + 117;
+                    if(auxiliar == 65 || auxiliar == 66 || auxiliar == 67 || auxiliar ==68) {
+                    	cr = cr + auxiliar + auxiliar2 + 117;
+                    }
+                    if(auxiliar == 51) {
+                    	auxiliar3 = super.read();
+                    	if(auxiliar3 == 126) {
+                    		cr = cr + auxiliar + auxiliar2 + auxiliar3;
+                    	}
+                    	
+                    }
+                    
                     //str = Integer.toString(cr)+ Integer.toString(auxiliar)+Integer.toString(auxiliar2);
                 }
                 //str = Integer.toString(cr)+ Integer.toString(auxiliar);
