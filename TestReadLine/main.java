@@ -11,10 +11,7 @@ class TestReadLine {
                 e.printStackTrace();
             }
         System.out.print(str);
-        //cmd = {"/bin/sh","-c","stty cooked</dev/tty"}
-        //Runtime.getRuntime().exec(cmd).waitFor();
-        in.unsetRaw();        
-        
+         in.unsetRaw();              
     }
 }
 
