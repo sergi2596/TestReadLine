@@ -1,6 +1,10 @@
 import java.io.*;
 
 class TestReadLine {
+	
+	getColumns cols = new getColumns();
+	
+	
     public static void main(String[] args) {
         EditableBufferedReader in = new EditableBufferedReader(new InputStreamReader(System.in));
         in.setRaw();
@@ -25,7 +29,6 @@ class EditableBufferedReader extends BufferedReader{
         int cr;
         int aux,aux2;
         String str = "";
-        //char frase='';
         cr = 0;
         while(cr!= 122){
             cr = read();
@@ -81,8 +84,7 @@ class EditableBufferedReader extends BufferedReader{
                 }
         }
         valor_final = cr;
-        cr=0;
-
+        //cr=0;
         return valor_final;
     }
     
