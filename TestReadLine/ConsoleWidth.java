@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 public class ConsoleWidth {
 
 	public int getConsoleWidth() {
+		
 		String[] command = { "bash", "-c", "tput cols 2> /dev/tty" };
 		try {
 			InputStream in = Runtime.getRuntime().exec(command).getInputStream();
