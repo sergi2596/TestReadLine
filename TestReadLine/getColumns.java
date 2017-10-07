@@ -5,7 +5,7 @@ import java.io.InputStreamReader;
 
 public class getColumns {
 
-	public static void main(String[] args) {
+	public void getConsoleWidth() {
 		String[] command = { "bash", "-c", "tput cols 2> /dev/tty" };
 		try {
 			InputStream in = Runtime.getRuntime().exec(command).getInputStream();

@@ -1,6 +1,10 @@
 import java.io.*;
 
 class TestReadLine {
+	
+	getColumns cols = new getColumns();
+	
+	
     public static void main(String[] args) {
         EditableBufferedReader in = new EditableBufferedReader(new InputStreamReader(System.in));
         in.setRaw();
