@@ -1,23 +1,6 @@
-import java.io.*;
-
-class TestReadLine {
-	
-	ConsoleWidth cols = new ConsoleWidth();
-	
-	
-    public static void main(String[] args) {
-        EditableBufferedReader in = new EditableBufferedReader(new InputStreamReader(System.in));
-        in.setRaw();
-        String str= null;
-        try {
-                str = in.readLine();
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
-        System.out.print(str);
-        in.unsetRaw();        
-    }
-}
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
 
 class EditableBufferedReader extends BufferedReader{
     public EditableBufferedReader(Reader in){
@@ -29,28 +12,31 @@ class EditableBufferedReader extends BufferedReader{
         int cr;
         int aux,aux2;
         String str = "";
+        char escCode = 0x1B;
         cr = 0;
-        while(cr!= 122){
+        System.out.print(String.format("%c[%d;%d%s",escCode,31,47,"m"));
+        System.out.print(String.format("%c[%d%s",escCode,4,"h"));
+        while(cr!= 26){
             cr = read();
-            char escCode = 0x1B;
-            //frase = (char)cr;
-            //System.out.print(frase);
             if (96<cr && cr<123){
-                //str= Integer.toString(cr);
                 str= Character.toString((char) cr);
                 System.out.print(str);
             }
-            if (cr ==300){
-                System.out.print(String.format("%c[%d%s",escCode,1,"A"));
-            }
-            if (cr ==301){
-                System.out.print(String.format("%c[%d%s",escCode,1,"B"));
-            }
-            if (cr ==302){
+            if (cr==32) {
+                System.out.print(String.format("%c[%d%s",escCode,1,"@"));
                 System.out.print(String.format("%c[%d%s",escCode,1,"C"));
             }
+            if (cr ==300){
+                System.out.print(String.format("%c[%d%s",escCode,1,"A"));//UP
+            }
+            if (cr ==301){
+                System.out.print(String.format("%c[%d%s",escCode,1,"B"));//DOWN
+            }
+            if (cr ==302){
+                System.out.print(String.format("%c[%d%s",escCode,1,"C"));//RIGHT
+            }
             if (cr ==303){
-                System.out.print(String.format("%c[%d%s",escCode,1,"D"));
+                System.out.print(String.format("%c[%d%s",escCode,1,"D"));//LEFT
             }
             if (cr==295) {
                 str="enviar un suprimir";
