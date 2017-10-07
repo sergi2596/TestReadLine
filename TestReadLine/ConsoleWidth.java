@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class getColumns {
+public class ConsoleWidth {
 
 	public void getConsoleWidth() {
 		String[] command = { "bash", "-c", "tput cols 2> /dev/tty" };

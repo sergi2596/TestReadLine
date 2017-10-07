@@ -2,7 +2,7 @@ import java.io.*;
 
 class TestReadLine {
 	
-	getColumns cols = new getColumns();
+	ConsoleWidth cols = new ConsoleWidth();
 	
 	
     public static void main(String[] args) {
