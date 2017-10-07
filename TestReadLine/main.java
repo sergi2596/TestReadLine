@@ -14,7 +14,7 @@ class TestReadLine {
          in.unsetRaw();              
     }
 }
-//hello guys
+
 class EditableBufferedReader extends BufferedReader{
     public EditableBufferedReader(Reader in){
         super(in);
@@ -48,19 +48,19 @@ class EditableBufferedReader extends BufferedReader{
     @Override
     public int read() throws IOException{
         int cr=0;
-        int auxiliar,auxiliar2,auxiliar3;
+        int aux,aux2,aux3;
         cr = super.read(); 
         if (cr == 27){
-                auxiliar = super.read();
-                if (auxiliar == 91){
-                    auxiliar2 = super.read();
-                    if(auxiliar == 65 || auxiliar == 66 || auxiliar == 67 || auxiliar ==68) {
-                    	cr = cr + auxiliar + auxiliar2 + 117;
+                aux = super.read();
+                if (aux == 91){
+                    aux2 = super.read();
+                    if(aux2 == 65 || aux2 == 66 || aux2 == 67 || aux2 ==68) {
+                    	cr = cr + aux2 + aux2 + 117;
                     }
-                    if(auxiliar == 51) {
-                    	auxiliar3 = super.read();
-                    	if(auxiliar3 == 126) {
-                    		cr = cr + auxiliar + auxiliar2 + auxiliar3;
+                    if(aux == 51) {
+                    	aux3 = super.read();
+                    	if(aux3 == 126) {
+                    		cr = cr + aux2 + aux2 + aux3;
                     	}
                     	
                     }
