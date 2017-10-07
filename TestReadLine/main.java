@@ -1,8 +1,6 @@
 import java.io.*;
 import java.util.Scanner;
 
-//change added to master branch in github
-
 class TestReadLine {
     public static void main(String[] args) {
         EditableBufferedReader in = new EditableBufferedReader(new InputStreamReader(System.in));
