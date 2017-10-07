@@ -11,10 +11,7 @@ class TestReadLine {
                 e.printStackTrace();
             }
         System.out.print(str);
-        //cmd = {"/bin/sh","-c","stty cooked</dev/tty"}
-        //Runtime.getRuntime().exec(cmd).waitFor();
         in.unsetRaw();        
-        
     }
 }
 
@@ -26,7 +23,7 @@ class EditableBufferedReader extends BufferedReader{
     @Override
     public String readLine() throws IOException{
         int cr;
-        int auxiliar,auxiliar2;
+        int aux,aux2;
         String str = "";
         //char frase='';
         cr = 0;
@@ -64,20 +61,20 @@ class EditableBufferedReader extends BufferedReader{
     public int read() throws IOException{
         int cr=0;
         int valor_final;
-        int auxiliar,auxiliar2,auxiliar3;
+        int aux,aux2,aux3;
         cr = super.read(); 
         if (cr == 27){
         	
-                auxiliar = super.read();
-                if (auxiliar == 91){
-                    auxiliar2 = super.read();
-                    if(auxiliar2 == 65 || auxiliar2 == 66 || auxiliar2 == 67 || auxiliar2 ==68) {
-                        cr = cr + auxiliar + auxiliar2 + 117;
+                aux = super.read();
+                if (aux == 91){
+                    aux2 = super.read();
+                    if(aux2 == 65 || aux2 == 66 || aux2 == 67 || aux2 ==68) {
+                        cr = cr + aux + aux2 + 117;
                     }
-                    if(auxiliar2 == 51) {
-                        auxiliar3 = super.read();
-                        if(auxiliar3 == 126) {
-                            cr = cr + auxiliar + auxiliar2 + auxiliar3;
+                    if(aux2 == 51) {
+                        aux3 = super.read();
+                        if(aux3 == 126) {
+                            cr = cr + aux + aux2 + aux3;
                         }
                         
                     }        
