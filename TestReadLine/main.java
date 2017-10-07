@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.Scanner;
+import java.applet.*;
 
 class TestReadLine {
     public static void main(String[] args) {
