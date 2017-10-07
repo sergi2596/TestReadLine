@@ -2,7 +2,7 @@ import java.io.*;
 
 class TestReadLine {
 	
-	ConsoleWidth cols = new ConsoleWidth();
+	static ConsoleWidth cols = new ConsoleWidth();
 	
 	
     public static void main(String[] args) {
@@ -11,10 +11,10 @@ class TestReadLine {
         String str= null;
         try {
                 str = in.readLine();
+                
             } catch(IOException e) {
                 e.printStackTrace();
             }
-        System.out.print(str);
         in.unsetRaw();        
     }
 }
