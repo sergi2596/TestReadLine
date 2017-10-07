@@ -1,8 +1,20 @@
 
 public class CursorPosition {
-
+	
+    public static void main(String[] args) {
+    	
+    	getCurrentPosition();
+    	
+    }
+    
+    public static void getCurrentPosition() {
+    	
+    	/*String[] str = {" ~$ echo -e "\033[6n""};
+    	Runtime.getRuntime().exec(str);*/
+    	System.out.println("\033[6n");
+    	
+    }
 }
-
 
 
 /*
@@ -22,7 +34,7 @@ public class CursorPosition {
  * 
  * 
  * echo -ne "\033[6n" 				# ask the terminal for the position 
- * read -s -d\[ garbage				#discard the first part of the response 
+ * read -s -d\[ garbage				# discard the first part of the response 
  * read -s -d R foo 				# store the position in bash variable 'foo' 
  * echo -n "Current position: " 
  * echo "$foo" 						# print the position
