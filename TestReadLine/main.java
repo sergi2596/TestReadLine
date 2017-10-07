@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.Scanner;
 
 class TestReadLine {
     public static void main(String[] args) {
@@ -11,10 +12,13 @@ class TestReadLine {
                 e.printStackTrace();
             }
         System.out.print(str);
-         in.unsetRaw();              
+        //cmd = {"/bin/sh","-c","stty cooked</dev/tty"}
+        //Runtime.getRuntime().exec(cmd).waitFor();
+        in.unsetRaw();        
+        
     }
 }
-//hello guys
+
 class EditableBufferedReader extends BufferedReader{
     public EditableBufferedReader(Reader in){
         super(in);
@@ -24,52 +28,66 @@ class EditableBufferedReader extends BufferedReader{
     public String readLine() throws IOException{
         int cr;
         int auxiliar,auxiliar2;
-        String str = null;
+        String str = "";
         //char frase='';
         cr = 0;
         while(cr!= 122){
             cr = read();
+            char escCode = 0x1B;
             //frase = (char)cr;
             //System.out.print(frase);
-            if (96<cr || cr<123){
-                str = Integer.toString(cr);
+            if (96<cr && cr<123){
+                //str= Integer.toString(cr);
+                str= Character.toString((char) cr);
+                System.out.print(str);
             }
-            if (cr>299){
-                str = Integer.toString(cr);
+            if (cr ==303){
+                System.out.print(String.format("%c[%d%s",escCode,1,"D"));
             }
-
+            if (cr ==302){
+                System.out.print(String.format("%c[%d%s",escCode,1,"A"));
+            }
+            if (cr ==301){
+                System.out.print(String.format("%c[%d%s",escCode,1,"B"));
+            }
+            if (cr ==300){
+                System.out.print(String.format("%c[%d%s",escCode,1,"C"));
+            }
             if (cr==295) {
-            	str="enviar un suprimir";
+                str="enviar un suprimir";
+
             }
-            return str;
         }
-        return "";
+        return str;   
     }
+
     @Override
     public int read() throws IOException{
         int cr=0;
+        int valor_final;
         int auxiliar,auxiliar2,auxiliar3;
         cr = super.read(); 
         if (cr == 27){
                 auxiliar = super.read();
                 if (auxiliar == 91){
                     auxiliar2 = super.read();
-                    if(auxiliar == 65 || auxiliar == 66 || auxiliar == 67 || auxiliar ==68) {
-                    	cr = cr + auxiliar + auxiliar2 + 117;
+                    if(auxiliar2 == 65 || auxiliar2 == 66 || auxiliar2 == 67 || auxiliar2 ==68) {
+                        cr = cr + auxiliar + auxiliar2 + 117;
                     }
-                    if(auxiliar == 51) {
-                    	auxiliar3 = super.read();
-                    	if(auxiliar3 == 126) {
-                    		cr = cr + auxiliar + auxiliar2 + auxiliar3;
-                    	}
-                    	
+                    if(auxiliar2 == 51) {
+                        auxiliar3 = super.read();
+                        if(auxiliar3 == 126) {
+                            cr = cr + auxiliar + auxiliar2 + auxiliar3;
+                        }
+                        
                     }
                     
-                    //str = Integer.toString(cr)+ Integer.toString(auxiliar)+Integer.toString(auxiliar2);
                 }
-                //str = Integer.toString(cr)+ Integer.toString(auxiliar);
-            }
-        return cr;
+        }
+        valor_final = cr;
+        cr=0;
+
+        return valor_final;
     }
     
 
