@@ -41,17 +41,17 @@ class EditableBufferedReader extends BufferedReader{
                 str= Character.toString((char) cr);
                 System.out.print(str);
             }
-            if (cr ==303){
-                System.out.print(String.format("%c[%d%s",escCode,1,"D"));
-            }
-            if (cr ==302){
+            if (cr ==300){
                 System.out.print(String.format("%c[%d%s",escCode,1,"A"));
             }
             if (cr ==301){
                 System.out.print(String.format("%c[%d%s",escCode,1,"B"));
             }
-            if (cr ==300){
+            if (cr ==302){
                 System.out.print(String.format("%c[%d%s",escCode,1,"C"));
+            }
+            if (cr ==303){
+                System.out.print(String.format("%c[%d%s",escCode,1,"D"));
             }
             if (cr==295) {
                 str="enviar un suprimir";
@@ -68,6 +68,7 @@ class EditableBufferedReader extends BufferedReader{
         int auxiliar,auxiliar2,auxiliar3;
         cr = super.read(); 
         if (cr == 27){
+        	
                 auxiliar = super.read();
                 if (auxiliar == 91){
                     auxiliar2 = super.read();
@@ -80,8 +81,7 @@ class EditableBufferedReader extends BufferedReader{
                             cr = cr + auxiliar + auxiliar2 + auxiliar3;
                         }
                         
-                    }
-                    
+                    }        
                 }
         }
         valor_final = cr;
