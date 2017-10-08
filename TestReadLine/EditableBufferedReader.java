@@ -10,7 +10,6 @@ class EditableBufferedReader extends BufferedReader{
     @Override
     public String readLine() throws IOException{
         int cr;
-        int aux,aux2;
         String str = "";
         char escCode = 0x1B;
         cr = 0;
