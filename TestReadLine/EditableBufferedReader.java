@@ -6,7 +6,7 @@ class EditableBufferedReader extends BufferedReader{
     public EditableBufferedReader(Reader in){
         super(in);
     }
-    
+    int hola =0;
     @Override
     public String readLine() throws IOException{
         int cr;
