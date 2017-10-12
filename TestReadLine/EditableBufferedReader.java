@@ -5,8 +5,7 @@ import java.io.Reader;
 class EditableBufferedReader extends BufferedReader{
 	
 	int columna, fila;
-	int colstotals;
-	ConsoleWidth c = new ConsoleWidth();
+	int TOTALCOLS = new ConsoleWidth().getConsoleWidth();
 	
     public EditableBufferedReader(Reader in){
         super(in);
@@ -60,8 +59,7 @@ class EditableBufferedReader extends BufferedReader{
             read();
             System.out.print("fila: "+fila+"columna: "+ columna);
             //COMPROBAR QUE NO ESTEM A L'ULTIMA COLUMNA
-            colstotals = c.getConsoleWidth();
-            if(columna == colstotals) {
+            if(columna == TOTALCOLS) {
             	fila = fila + 1;
             	columna = 1;
             	System.out.print(String.format("%c[%d;%d%s",escCode,fila,columna,"f"));
