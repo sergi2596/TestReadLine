@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 
 public class CursorPosition {
 	
@@ -7,14 +12,27 @@ public class CursorPosition {
     	
     }
     
-    public static void getCurrentPosition() {
+    public static String getCurrentPosition() {
     	
-    	/*String[] str = {" ~$ echo -e "\033[6n""};
-    	Runtime.getRuntime().exec(str);*/
-    	System.out.println("\033[6n");
+    		
+    		String[] command = { "bash", "-c", "tput smul > /dev/tty" };
+    		try {
+    			InputStream in = Runtime.getRuntime().exec(command).getInputStream();
+    			InputStreamReader isr = new InputStreamReader(in);
+    			BufferedReader buf = new BufferedReader(isr);
+    			String str = buf.readLine();
+    			//int numcols = Integer.parseInt(buf.readLine());
+    			return str;
+
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
+    		return null;
+    	}
+
     	
     }
-}
+
 
 
 /*
