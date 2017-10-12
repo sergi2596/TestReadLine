@@ -3,6 +3,11 @@ import java.io.IOException;
 import java.io.Reader;
 
 class EditableBufferedReader extends BufferedReader{
+	
+	int columna, fila;
+	int colstotals;
+	ConsoleWidth c = new ConsoleWidth();
+	
     public EditableBufferedReader(Reader in){
         super(in);
     }
@@ -13,9 +18,13 @@ class EditableBufferedReader extends BufferedReader{
         String str = "";
         char escCode = 0x1B;
         cr = 0;
-        System.out.print(String.format("%c[%d;%d%s",escCode,31,47,"m"));
-        System.out.print(String.format("%c[%d%s",escCode,4,"h"));
-        while(cr!= 26){
+        System.out.print(String.format("%c[%d;%d%s",escCode,31,47,"m")); //colors
+        System.out.print(String.format("%c[%d%s",escCode,4,"h"));	//insert
+        //System.out.print(String.format("%c[%d%s",escCode,6,"n"));
+        //System.out.print(read()+""+read()+""+read()+""+read()+""+read());
+        //System.out.print(String.format("%c[%d%s",escCode,7,"h"));	//line wrap
+        
+        while(cr!= 4){
             cr = read();
             if (96<cr && cr<123){
                 str= Character.toString((char) cr);
@@ -41,6 +50,23 @@ class EditableBufferedReader extends BufferedReader{
                 str="enviar un suprimir";
 
             }
+            
+            //LLEGIM COLUMNA I FILA ACTUAL CADA COP QUE APRETEM TECLA
+            System.out.print(String.format("%c[%d%s",escCode,6,"n"));
+            read();
+            columna = read()-48;
+            read();
+            fila = read()-48;
+            read();
+            System.out.print("fila: "+fila+"columna: "+ columna);
+            //COMPROBAR QUE NO ESTEM A L'ULTIMA COLUMNA
+            colstotals = c.getConsoleWidth();
+            if(columna == colstotals) {
+            	fila = fila + 1;
+            	columna = 1;
+            	System.out.print(String.format("%c[%d;%d%s",escCode,fila,columna,"f"));
+            }
+            
         }
         return str;   
     }
