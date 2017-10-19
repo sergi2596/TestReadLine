@@ -10,6 +10,10 @@ class EditableBufferedReader extends BufferedReader {
 	int TOTALCOLS = new ConsoleWidth().getConsoleWidth();
 	boolean aux = false;
 	CursorPosition cp = new CursorPosition();
+	final int UP_ARROW = 300, DOWN_ARROW = 301, RIGHT_ARROW = 302,
+			LEFT_ARROW = 303, SPACE = 32, CTRLD = 4, CTRLS = 19,
+			SUPRIMIR = 295, ESC = 27, CORXET = 91, DELETE = 127, HOME = 305,
+			END = 304;
 
 	public EditableBufferedReader(Reader in) {
 		super(in);
@@ -23,59 +27,79 @@ class EditableBufferedReader extends BufferedReader {
 		String str = "";
 		char escCode = 0x1B;
 		cr = 0;
-		System.out.print(String.format("%c[%d;%d%s", escCode, 31, 47, "m")); // colors
+		System.out.print(String.format("%c[%d;%d%s", escCode, 37, 49, "m")); // colors
 		System.out.print(String.format("%c[%d%s", escCode, 4, "h")); // insert
 		// System.out.print(String.format("%c[%d%s",escCode,6,"n"));
 		// System.out.print(read()+""+read()+""+read()+""+read()+""+read());
 		// System.out.print(String.format("%c[%d%s",escCode,7,"h")); //line wrap
 
-		while (cr != 4) {
+		while (cr != CTRLD) {
 			cr = read();
 			if (96 < cr && cr < 123) {
 				str = Character.toString((char) cr);
 				System.out.print(str);
 			}
-			if (cr == 19) {
-				if(aux) {
+			else if (cr == CTRLS) {
+				if (aux) {
 					String[] cmd = { "bash", "-c", "tput rmul > /dev/tty" };
 					executarComanda(cmd);
 					aux = false;
-				
+
 				} else {
 					String[] cmd = { "bash", "-c", "tput smul > /dev/tty" };
 					executarComanda(cmd);
 					aux = true;
 				}
 			}
-		
-			if (cr == 32) {
+
+			else if (cr == SPACE) {
 				System.out.print(String.format("%c[%d%s", escCode, 1, "@"));
 				System.out.print(String.format("%c[%d%s", escCode, 1, "C"));
 			}
-			if (cr == 300) {
-				System.out.print(String.format("%c[%d%s", escCode, 1, "A"));// UP
+			else if (cr == UP_ARROW) {
+				System.out.print(String.format("%c[%d%s", escCode, 1, "A"));
 			}
-			if (cr == 301) {
-				System.out.print(String.format("%c[%d%s", escCode, 1, "B"));// DOWN
+			else if (cr == DOWN_ARROW) {
+				System.out.print(String.format("%c[%d%s", escCode, 1, "B"));
 			}
-			if (cr == 302) {
-				String cursorposition = cp.getCurrentPosition();
-				System.out.print(cursorposition);
+			else if (cr == RIGHT_ARROW) {
 				/*
+				 * String cursorposition = cp.getCurrentPosition();
+				 * System.out.print(cursorposition);
+				 * 
 				 * System.out.print(String.format("%c[%d%s",escCode,6,"n"));
 				 * System.out.print(read() +" "+ read() +" "+ read() +" "+
 				 * read() + "" + read() +" "+ read() +"   ");
 				 * System.out.print(readLine());
 				 */
-				System.out.print(String.format("%c[%d%s", escCode, 1, "C"));// RIGHT
+
+				System.out.print(String.format("%c[%d%s", escCode, 1, "C"));
 			}
-			if (cr == 303) {
-				System.out.print(String.format("%c[%d%s", escCode, 1, "D"));// LEFT
+			else if (cr == LEFT_ARROW) {
+				System.out.print(String.format("%c[%d%s", escCode, 1, "D"));
 			}
-			if (cr == 295) {
-				str = "enviar un suprimir";
+			else if (cr == DELETE) {
+
+				System.out.print(String.format("%c[%d%s", escCode, 1, "D"));
+				System.out.print(String.format("%c[%d%s", escCode, 1, "X"));
 
 			}
+			else if (cr == SUPRIMIR) {
+				System.out.print(String.format("%c[%d%s", escCode, 1, "C"));
+				System.out.print(String.format("%c[%d%s", escCode, 1, "X"));
+				//System.out.print(String.format("%c[%d%s", escCode, 1, "S"));
+
+
+			}
+			else if ( cr == HOME) {
+				System.out.print(String.format("%c[%d%s", escCode, 1, "G"));
+			}
+			else if (cr == END) {
+				System.out.print(String.format("%c[%d%s", escCode, TOTALCOLS, "G"));
+			}
+			/**
+			 * Delete = 127 Home = 27 91 72 End = 27 91 70
+			 */
 
 			/**
 			 * SEQUENCIA RESPOSTA POSICIÓ CURSOR:
@@ -109,25 +133,28 @@ class EditableBufferedReader extends BufferedReader {
 		int valor_final;
 		int aux, aux2, aux3;
 		cr = super.read();
-		if (cr == 27) {
+		if (cr == ESC) {
 			aux = super.read();
-			if (aux == 91) {
+			if (aux == CORXET) {
 				aux2 = super.read();
 				if (aux2 == 65 || aux2 == 66 || aux2 == 67 || aux2 == 68) {
 					cr = cr + aux + aux2 + 117;
 				}
 
-				if (aux2 == 51) {
+				else if (aux2 == 51) {
 					aux3 = super.read();
 					if (aux3 == 126) {
-						cr = cr + aux + aux2 + aux3;
+						cr = SUPRIMIR;
 					}
 
+				} else if (aux2 == 70) { 
+					cr = END;
+				} else if (aux2 == 72) {
+					cr = HOME;
 				}
 			}
 		}
 		valor_final = cr;
-		// cr=0;
 		return valor_final;
 	}
 
