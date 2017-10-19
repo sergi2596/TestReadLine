@@ -37,8 +37,14 @@ class EditableBufferedReader extends BufferedReader {
 			}
 			if (cr == 19) {
 				if(aux) {
-				//	executarComanda(String[] cmd = {" "bash", "-c", "tput smul > /dev/tty" "});
+					String[] cmd = { "bash", "-c", "tput rmul > /dev/tty" };
+					executarComanda(cmd);
+					aux = false;
 				
+				} else {
+					String[] cmd = { "bash", "-c", "tput smul > /dev/tty" };
+					executarComanda(cmd);
+					aux = true;
 				}
 			}
 		
