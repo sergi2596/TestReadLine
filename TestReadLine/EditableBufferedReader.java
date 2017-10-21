@@ -1,10 +1,14 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.*;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 
 class EditableBufferedReader extends BufferedReader{
 	
-	int columna, fila;
+	int columna, fila,maxcol,maxfil;
 	int colstotals;
 	ConsoleWidth c = new ConsoleWidth();
 	
@@ -18,18 +22,20 @@ class EditableBufferedReader extends BufferedReader{
         String str = "";
         char escCode = 0x1B;
         cr = 0;
+        maxcol=1;
+        maxfil=1;
+        colstotals = c.getConsoleWidth();
         System.out.print(String.format("%c[%d;%d%s",escCode,31,47,"m")); //colors
         System.out.print(String.format("%c[%d%s",escCode,4,"h"));	//insert
-        //System.out.print(String.format("%c[%d%s",escCode,6,"n"));
-        //System.out.print(read()+""+read()+""+read()+""+read()+""+read());
-        //System.out.print(String.format("%c[%d%s",escCode,7,"h"));	//line wrap
         
         while(cr!= 4){
             cr = read();
             if (96<cr && cr<123){
                 str= Character.toString((char) cr);
                 System.out.print(str);
+
             }
+             
             if (cr==32) {
                 System.out.print(String.format("%c[%d%s",escCode,1,"@"));
                 System.out.print(String.format("%c[%d%s",escCode,1,"C"));
@@ -38,10 +44,23 @@ class EditableBufferedReader extends BufferedReader{
                 System.out.print(String.format("%c[%d%s",escCode,1,"A"));//UP
             }
             if (cr ==301){
-                System.out.print(String.format("%c[%d%s",escCode,1,"B"));//DOWN
+            	if(fila <= maxfil) {
+            		if(fila < maxfil) {
+            			System.out.print(String.format("%c[%d%s",escCode,1,"B"));//DOWN
+            		}
+            		if(fila == maxfil && columna < maxcol) {
+            			System.out.print(String.format("%c[%d%s",escCode,1,"B"));//DOWN
+            		}
+        		}
+                
             }
             if (cr ==302){
-                System.out.print(String.format("%c[%d%s",escCode,1,"C"));//RIGHT
+            	if((fila == maxfil) && (columna<= maxcol)) {
+            		System.out.print(String.format("%c[%d%s",escCode,1,"C"));//RIGHT
+            	}
+                if (fila< maxfil) {
+                	System.out.print(String.format("%c[%d%s",escCode,1,"C"));//RIGHT
+                }
             }
             if (cr ==303){
                 System.out.print(String.format("%c[%d%s",escCode,1,"D"));//LEFT
@@ -52,16 +71,10 @@ class EditableBufferedReader extends BufferedReader{
             }
             
             //LLEGIM COLUMNA I FILA ACTUAL CADA COP QUE APRETEM TECLA
-            System.out.print(String.format("%c[%d%s",escCode,6,"n"));
-            read();
-            columna = read()-48;
-            read();
-            fila = read()-48;
-            read();
-            System.out.print("fila: "+fila+"columna: "+ columna);
-            //COMPROBAR QUE NO ESTEM A L'ULTIMA COLUMNA
-            colstotals = c.getConsoleWidth();
+            filacol();
+            maxims();
             if(columna == colstotals) {
+            	maxcol=1;
             	fila = fila + 1;
             	columna = 1;
             	System.out.print(String.format("%c[%d;%d%s",escCode,fila,columna,"f"));
@@ -69,6 +82,70 @@ class EditableBufferedReader extends BufferedReader{
             
         }
         return str;   
+    }
+    public void maxims() {
+    	if(fila == maxfil) {
+    		maxcol = (columna>maxcol) ? columna: maxcol;
+    	}
+    	maxfil = (fila>maxfil) ? fila:maxfil;
+    	try{
+    		String[] command = { "bash", "-c", "echo maxfila:" + maxfil+" maxcol: "+ maxcol +" > /dev/pts/17" };
+    		InputStream in = Runtime.getRuntime().exec(command).getInputStream();
+    	}catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    	
+    }
+    public void filacol() {
+    	List<Integer> filacols = new ArrayList<Integer>();
+    	int aux,i,indice,longitud;
+    	aux=0;i=0;indice=0;longitud=0;
+    	char escCode = 0x1B;
+    	BufferedReader buf = new BufferedReader(new InputStreamReader(System.in));
+
+    	try {
+    		System.out.print(String.format("%c[%d%s",escCode,6,"n"));
+    		while(aux!=82) {
+    			aux = buf.read();
+    			if((aux != 27) && (aux != 91) && (aux != 82)) {
+    				filacols.add(aux);
+    			}
+    		}
+        	while(i<filacols.size()) {
+        		filacols.set(i,filacols.get(i)-48);
+        		i++;
+        	}
+        	indice = filacols.indexOf(11);
+        	longitud = filacols.size();
+        	switch(indice) {
+    		case 1:
+    			fila = filacols.get(0);
+    			if(longitud==3) {
+    				columna = filacols.get(2);
+    			}else {
+    				columna = Integer.parseInt(filacols.get(2) + "" + filacols.get(3));
+    			}
+    			break;
+    		case 2:
+    			fila = Integer.parseInt(filacols.get(0) + "" + filacols.get(1));
+    			if(longitud==4) {
+    				columna = filacols.get(3);
+    			}else if(longitud ==5) {
+    				columna = Integer.parseInt(filacols.get(3) + "" + filacols.get(4));
+    			}
+    			break;
+    		default:
+    		}
+
+    	String[] command = { "bash", "-c", "echo fila: " + fila+" columna: "+ columna +" > /dev/pts/17" };
+    	InputStream in = Runtime.getRuntime().exec(command).getInputStream();
+    			
+    	
+    	}catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    	
+    	
     }
 
     @Override
