@@ -9,7 +9,6 @@ class EditableBufferedReader extends BufferedReader {
 	int columna, fila;
 	int TOTALCOLS = new ConsoleWidth().getConsoleWidth();
 	boolean aux = false;
-	CursorPosition cp = new CursorPosition();
 	final int UP_ARROW = 300, DOWN_ARROW = 301, RIGHT_ARROW = 302,
 			LEFT_ARROW = 303, SPACE = 32, CTRLD = 4, CTRLS = 19,
 			SUPRIMIR = 295, ESC = 27, CORXET = 91, DELETE = 127, HOME = 305,
