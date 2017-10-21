@@ -4,8 +4,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-class EditableBufferedReader extends BufferedReader {
 
+class EditableBufferedReader extends BufferedReader {
+	
 	int columna, fila;
 	int TOTALCOLS = new ConsoleWidth().getConsoleWidth();
 	boolean aux = false;
