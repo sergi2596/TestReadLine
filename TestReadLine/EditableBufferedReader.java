@@ -20,7 +20,6 @@ class EditableBufferedReader extends BufferedReader{
     public EditableBufferedReader(Reader in){
         super(in);
     }
-    int hola =0;
     @Override
     public String readLine() throws IOException{
         int cr;
@@ -33,7 +32,7 @@ class EditableBufferedReader extends BufferedReader{
         maxfil=fila;
         System.out.print(String.format("%c[%d;%d%s",escCode,31,47,"m")); //colors
         System.out.print(String.format("%c[%d%s",escCode,4,"h"));	//insert
-        System.out.print(String.format("%c[%s%d%s",escCode,"?",4,"h"));	//insert
+        
         
         while (cr != CTRLD) {
 			cr = read();
