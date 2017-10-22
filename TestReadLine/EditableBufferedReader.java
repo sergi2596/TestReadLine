@@ -4,9 +4,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-
 class EditableBufferedReader extends BufferedReader {
-	
+
 	int columna, fila;
 	int TOTALCOLS = new ConsoleWidth().getConsoleWidth();
 	boolean aux = false;
@@ -38,8 +37,7 @@ class EditableBufferedReader extends BufferedReader {
 			if (96 < cr && cr < 123) {
 				str = Character.toString((char) cr);
 				System.out.print(str);
-			}
-			else if (cr == CTRLS) {
+			} else if (cr == CTRLS) {
 				if (aux) {
 					String[] cmd = { "bash", "-c", "tput rmul > /dev/tty" };
 					executarComanda(cmd);
@@ -55,14 +53,11 @@ class EditableBufferedReader extends BufferedReader {
 			else if (cr == SPACE) {
 				System.out.print(String.format("%c[%d%s", escCode, 1, "@"));
 				System.out.print(String.format("%c[%d%s", escCode, 1, "C"));
-			}
-			else if (cr == UP_ARROW) {
+			} else if (cr == UP_ARROW) {
 				System.out.print(String.format("%c[%d%s", escCode, 1, "A"));
-			}
-			else if (cr == DOWN_ARROW) {
+			} else if (cr == DOWN_ARROW) {
 				System.out.print(String.format("%c[%d%s", escCode, 1, "B"));
-			}
-			else if (cr == RIGHT_ARROW) {
+			} else if (cr == RIGHT_ARROW) {
 				/*
 				 * String cursorposition = cp.getCurrentPosition();
 				 * System.out.print(cursorposition);
@@ -74,28 +69,23 @@ class EditableBufferedReader extends BufferedReader {
 				 */
 
 				System.out.print(String.format("%c[%d%s", escCode, 1, "C"));
-			}
-			else if (cr == LEFT_ARROW) {
+			} else if (cr == LEFT_ARROW) {
 				System.out.print(String.format("%c[%d%s", escCode, 1, "D"));
-			}
-			else if (cr == DELETE) {
+			} else if (cr == DELETE) {
 
 				System.out.print(String.format("%c[%d%s", escCode, 1, "D"));
 				System.out.print(String.format("%c[%d%s", escCode, 1, "X"));
 
-			}
-			else if (cr == SUPRIMIR) {
+			} else if (cr == SUPRIMIR) {
 				System.out.print(String.format("%c[%d%s", escCode, 1, "C"));
 				System.out.print(String.format("%c[%d%s", escCode, 1, "X"));
-				//System.out.print(String.format("%c[%d%s", escCode, 1, "S"));
+				// System.out.print(String.format("%c[%d%s", escCode, 1, "S"));
 
-
-			}
-			else if ( cr == HOME) {
+			} else if (cr == HOME) {
 				System.out.print(String.format("%c[%d%s", escCode, 1, "G"));
-			}
-			else if (cr == END) {
-				System.out.print(String.format("%c[%d%s", escCode, TOTALCOLS, "G"));
+			} else if (cr == END) {
+				System.out.print(String.format("%c[%d%s", escCode, TOTALCOLS,
+						"G"));
 			}
 			/**
 			 * Delete = 127 Home = 27 91 72 End = 27 91 70
@@ -147,7 +137,7 @@ class EditableBufferedReader extends BufferedReader {
 						cr = SUPRIMIR;
 					}
 
-				} else if (aux2 == 70) { 
+				} else if (aux2 == 70) {
 					cr = END;
 				} else if (aux2 == 72) {
 					cr = HOME;
