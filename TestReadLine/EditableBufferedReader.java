@@ -7,7 +7,6 @@ import java.util.*;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-
 class EditableBufferedReader extends BufferedReader {
 
 	int currentcol, currentrow;
@@ -19,26 +18,37 @@ class EditableBufferedReader extends BufferedReader {
 			SUPRIMIR = 295, ESC = 27, CORXET = 91, DELETE = 127, HOME = 305,
 			END = 304, ENTER = 13;
 
-	
-    public EditableBufferedReader(Reader in){
-        super(in);
-    }
-    @Override
-    public String readLine() throws IOException{
-        int cr = 0;
-        String str = "";
-        char escCode = 0x1B;
-        System.out.print(String.format("%c[%d;%d%s",escCode,37,49,"m")); //colors
-        System.out.print(String.format("%c[%d%s",escCode,4,"h"));	//insert
-        rowcol.setFirstRow();
-        int firstrow = rowcol.getFirstRow();
-        
-        while (cr != CTRLD) {
-        	currentrow = rowcol.getRow();
-        	currentcol = rowcol.getColumn();
-			cr = read();			
+	public EditableBufferedReader(Reader in) {
+		super(in);
+	}
+
+	@Override
+	public String readLine() throws IOException {
+		int cr = 0;
+		String str = "";
+		char escCode = 0x1B;
+		System.out.print(String.format("%c[%d;%d%s", escCode, 37, 49, "m")); // colors
+		System.out.print(String.format("%c[%d%s", escCode, 4, "h")); // insert
+
+		/**
+		 * Quan inciem el programa, marquem amb setFirstRow() quina es la
+		 * primera fila de l'editor. A continuació la guardem amb getFirstRow()
+		 */
+		rowcol.setFirstRow();
+		int firstrow = rowcol.getFirstRow();
+
+		while (cr != CTRLD) {
+
+			/**
+			 * Cada cop que escrivim, guardem la posició del cursor amb getRow()
+			 * i getCol()
+			 */
+			currentrow = rowcol.getRow();
+			currentcol = rowcol.getColumn();
+			cr = read();
 			if (96 < cr && cr < 123) {
-				rowcol.AddColumn();
+				rowcol.AddColumn(); // Si el caracter es una lletra, primer de
+									// tot afegim una columna a la fila
 				str = Character.toString((char) cr);
 				System.out.print(str);
 			} else if (cr == CTRLS) {
@@ -59,76 +69,120 @@ class EditableBufferedReader extends BufferedReader {
 				System.out.print(String.format("%c[%d%s", escCode, 1, "C"));
 
 			}
+
+			/**
+			 * Per la UP_ARROW, primer mirem que la fila actual no sigui la
+			 * primera. En tal cas, si estem a una columna més gran que el
+			 * numero màxim de columnes de la fila de dalt, enviem el cursor a
+			 * la columna màxima de la fila de dalt (així evitem que es pugui
+			 * fer "trampa" i enviar el cursor a una columna de la fila de dalt
+			 * que encara no existeix. Ho fem en dos passos, primer movem cursor
+			 * a dalt i despres a la dreta (hi ha una comanda per fer-ho de cop
+			 * però no m'ha funcionat bé).
+			 */
+
 			else if (cr == UP_ARROW) {
-				if (currentrow > firstrow ) {
+				if (currentrow > firstrow) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "A"));
-					if (currentcol > rowcol.getMaxColumn((currentrow-1))) {
-						System.out.print(String.format("%c[%d%s", escCode, rowcol.getMaxColumn(currentrow-1), "G"));
+					if (currentcol > rowcol.getMaxColumn((currentrow - 1))) {
+						System.out.print(String.format("%c[%d%s", escCode,
+								rowcol.getMaxColumn(currentrow - 1), "G"));
 					}
 				}
-				
-				
-			}
-			else if (cr == DOWN_ARROW) {
+
+				/**
+				 * Igual que UP_ARROW però mirant que no ens passem de la fila
+				 * màxima
+				 */
+
+			} else if (cr == DOWN_ARROW) {
 				if (currentrow < rowcol.getLastRow()) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "B"));
-					if (currentcol > rowcol.getMaxColumn((currentrow+1))) {
-						System.out.print(String.format("%c[%d%s", escCode, rowcol.getMaxColumn(currentrow+1), "G"));
+					if (currentcol > rowcol.getMaxColumn((currentrow + 1))) {
+						System.out.print(String.format("%c[%d%s", escCode,
+								rowcol.getMaxColumn(currentrow + 1), "G"));
 					}
 				}
-				
-			}
-			else if (cr == RIGHT_ARROW) {
+
+				/**
+				 * Si no estem a la columna maxima de la fila, movem cursor a la
+				 * dreta i punto. Si estem a la ultima columna (però NO a la
+				 * ultima fila), movem cursor a la fila següent, columna 1
+				 */
+
+			} else if (cr == RIGHT_ARROW) {
 				if (currentcol <= rowcol.getMaxColumn(currentrow)) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "C"));
-				}
-				else if ((currentcol > rowcol.getMaxColumn(currentrow)) && currentrow < rowcol.getLastRow()) {
+				} else if ((currentcol > rowcol.getMaxColumn(currentrow))
+						&& currentrow < rowcol.getLastRow()) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "E"));
 				}
-				
-				
-			}
-			else if (cr == LEFT_ARROW) {
+
+				/**
+				 * Igual que abans, però per canviar de fila ho fem en dos
+				 * passos (també es pot fer en un però no funcionava). Primer
+				 * movem cursor a la fila de dalt i despres el movem a la dreta
+				 * fins la columna màxima.
+				 */
+
+			} else if (cr == LEFT_ARROW) {
 				if (currentcol > 1) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "D"));
-				}
-				else if ((currentcol == 1) && currentrow > firstrow) {
+				} else if ((currentcol == 1) && currentrow > firstrow) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "A"));
-					System.out.print(String.format("%c[%d%s", escCode, rowcol.getMaxColumn(rowcol.getRow()), "C"));
+					System.out.print(String.format("%c[%d%s", escCode,
+							rowcol.getMaxColumn(rowcol.getRow()), "C"));
 				}
-				
-			}
-			else if (cr == DELETE) {
+
+				/**
+				 * Si estem borrant la primera lletra d'una fila (que no sigui
+				 * la primera fila), movem cursor a la fila de dalt fins la
+				 * ultima columna i borrem el caracter que quedava. També
+				 * decrementem el numero de columnes de la fila (en cas que no
+				 * en quedin, el metode DownCol() s'encarrega d'eliminar la fila
+				 * del TreeMap)
+				 */
+
+			} else if (cr == DELETE) {
 				if (currentcol == 1 && currentrow > firstrow) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "A"));
-					System.out.print(String.format("%c[%d%s", escCode, rowcol.getMaxColumn(currentrow-1)+1, "G"));
+					System.out.print(String.format("%c[%d%s", escCode,
+							rowcol.getMaxColumn(currentrow - 1) + 1, "G"));
 				}
 				System.out.print(String.format("%c[%d%s", escCode, 1, "D"));
 				System.out.print(String.format("%c[%d%s", escCode, 1, "X"));
 				rowcol.DownColumn();
 
-			} 
-			else if (cr == SUPRIMIR) {
+				/**
+				 * SUPRIMIR encara NO està implementat correctament
+				 */
+
+			} else if (cr == SUPRIMIR) {
 				System.out.print(String.format("%c[%d%s", escCode, 1, "C"));
 				System.out.print(String.format("%c[%d%s", escCode, 1, "X"));
-
-			} 
-			else if (cr == HOME) {
+				
+				/**
+				 * HOME i END són iguals que sempre, molt bàsic 
+				 */
+				
+			} else if (cr == HOME) {
 				System.out.print(String.format("%c[%d%s", escCode, 1, "G"));
-			} 
-			else if (cr == END) {
-				System.out.print(String.format("%c[%d%s", escCode, rowcol.getMaxColumn(currentrow)+1,
-						"G"));
-			} 
-			else if (cr == ENTER) {
+			} else if (cr == END) {
+				System.out.print(String.format("%c[%d%s", escCode,
+						rowcol.getMaxColumn(currentrow) + 1, "G"));
+
+				/**
+				 * ENTER només funciona si en fem un i escrivim algo. Si fem dos
+				 * ENTERS (deixant una fila en blanc) NO està implementat
+				 */
+			} else if (cr == ENTER) {
 				System.out.print(String.format("%c[%d%s", escCode, 1, "E"));
 			}
-			
-        }
-        return str;   
-    }
 
-   
+		}
+		return str;
+	}
+
 	@Override
 	public int read() throws IOException {
 		int cr = 0;
