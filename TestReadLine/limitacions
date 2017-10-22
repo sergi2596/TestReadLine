@@ -1,0 +1,11 @@
+
+------LIMITACIONS DEL PROGRAMA--------
+
+1. Podem escriure una linia, apretar ENTER i seguir escrivint a la següent, però si apretem dos cops ENTER (deixant una linia en blanc) pot ser que l'editor falli (crec que sé arreglar-ho però encara no he pogut)
+
+2. Si omplim una linia fins al final del terminal i ens movem amb les fletxes o apretant END, el cursor va fins a la penúltima lletra de la linia en comptes de la ultima.
+
+3. Si deixem apretada la fletxa dreta o esquerra i anem massa rapids, l'editor no te temps de procesar-ho i peta.
+
+4. Per borrar una linia ho hem de fer des del final, no podem borrar a mitja linia perque encara no esta implementat això. La tecla SUPRIMIR tampoc està implementada.
+
