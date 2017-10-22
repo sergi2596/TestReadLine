@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 
 class EditableBufferedReader extends BufferedReader {
 
+
 	int currentcol, currentrow;
 	int TOTALCOLS = new ConsoleWidth().getConsoleWidth();
 	RowColumn rowcol = new RowColumn();
@@ -24,6 +25,7 @@ class EditableBufferedReader extends BufferedReader {
 
 	@Override
 	public String readLine() throws IOException {
+
 		int cr = 0;
 		String str = "";
 		char escCode = 0x1B;
@@ -68,6 +70,7 @@ class EditableBufferedReader extends BufferedReader {
 				System.out.print(String.format("%c[%d%s", escCode, 1, "@"));
 				System.out.print(String.format("%c[%d%s", escCode, 1, "C"));
 
+
 			}
 
 			/**
@@ -90,6 +93,7 @@ class EditableBufferedReader extends BufferedReader {
 					}
 				}
 
+
 				/**
 				 * Igual que UP_ARROW però mirant que no ens passem de la fila
 				 * màxima
@@ -104,7 +108,7 @@ class EditableBufferedReader extends BufferedReader {
 					}
 				}
 
-				/**
+		/**
 				 * Si no estem a la columna maxima de la fila, movem cursor a la
 				 * dreta i punto. Si estem a la ultima columna (però NO a la
 				 * ultima fila), movem cursor a la fila següent, columna 1
@@ -117,6 +121,7 @@ class EditableBufferedReader extends BufferedReader {
 						&& currentrow < rowcol.getLastRow()) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "E"));
 				}
+
 
 				/**
 				 * Igual que abans, però per canviar de fila ho fem en dos
@@ -133,6 +138,7 @@ class EditableBufferedReader extends BufferedReader {
 					System.out.print(String.format("%c[%d%s", escCode,
 							rowcol.getMaxColumn(rowcol.getRow()), "C"));
 				}
+
 
 				/**
 				 * Si estem borrant la primera lletra d'una fila (que no sigui
@@ -168,6 +174,7 @@ class EditableBufferedReader extends BufferedReader {
 			} else if (cr == HOME) {
 				System.out.print(String.format("%c[%d%s", escCode, 1, "G"));
 			} else if (cr == END) {
+
 				System.out.print(String.format("%c[%d%s", escCode,
 						rowcol.getMaxColumn(currentrow) + 1, "G"));
 
@@ -178,6 +185,7 @@ class EditableBufferedReader extends BufferedReader {
 			} else if (cr == ENTER) {
 				System.out.print(String.format("%c[%d%s", escCode, 1, "E"));
 			}
+
 
 		}
 		return str;
