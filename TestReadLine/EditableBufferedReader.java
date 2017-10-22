@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 
 class EditableBufferedReader extends BufferedReader {
 
-	int columna, fila;
+	int currentcol, currentrow;
 	int TOTALCOLS = new ConsoleWidth().getConsoleWidth();
 	RowColumn rowcol = new RowColumn();
 	boolean aux = false;
@@ -25,17 +25,17 @@ class EditableBufferedReader extends BufferedReader {
     }
     @Override
     public String readLine() throws IOException{
-        int cr;
+        int cr = 0;
         String str = "";
         char escCode = 0x1B;
-        cr = 0;
         System.out.print(String.format("%c[%d;%d%s",escCode,37,49,"m")); //colors
         System.out.print(String.format("%c[%d%s",escCode,4,"h"));	//insert
         rowcol.setFirstRow();
+        int firstrow = rowcol.getFirstRow();
         
         while (cr != CTRLD) {
-        	fila = rowcol.getRow();
-        	columna = rowcol.getColumn();
+        	currentrow = rowcol.getRow();
+        	currentcol = rowcol.getColumn();
 			cr = read();			
 			if (96 < cr && cr < 123) {
 				rowcol.AddColumn();
@@ -60,93 +60,70 @@ class EditableBufferedReader extends BufferedReader {
 
 			}
 			else if (cr == UP_ARROW) {
-				if (fila > 2 ) {
+				if (currentrow > firstrow ) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "A"));
-					if (columna > rowcol.getMaxColumn((fila-1))) {
-						System.out.print(String.format("%c[%d%s", escCode, rowcol.getMaxColumn(fila-1), "G"));
+					if (currentcol > rowcol.getMaxColumn((currentrow-1))) {
+						System.out.print(String.format("%c[%d%s", escCode, rowcol.getMaxColumn(currentrow-1), "G"));
 					}
 				}
 				
 				
 			}
 			else if (cr == DOWN_ARROW) {
-				if (fila < rowcol.getLastRow()) {
+				if (currentrow < rowcol.getLastRow()) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "B"));
-					if (columna > rowcol.getMaxColumn((fila+1))) {
-						System.out.print(String.format("%c[%d%s", escCode, rowcol.getMaxColumn(fila+1), "G"));
+					if (currentcol > rowcol.getMaxColumn((currentrow+1))) {
+						System.out.print(String.format("%c[%d%s", escCode, rowcol.getMaxColumn(currentrow+1), "G"));
 					}
 				}
 				
 			}
 			else if (cr == RIGHT_ARROW) {
-				if (columna < rowcol.getMaxColumn(fila)) {
+				if (currentcol <= rowcol.getMaxColumn(currentrow)) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "C"));
 				}
-				else if ((columna >= rowcol.getMaxColumn(fila)) && fila < rowcol.getLastRow()) {
+				else if ((currentcol > rowcol.getMaxColumn(currentrow)) && currentrow < rowcol.getLastRow()) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "E"));
 				}
 				
 				
 			}
 			else if (cr == LEFT_ARROW) {
-				if (columna > 1) {
+				if (currentcol > 1) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "D"));
 				}
-				else if ((columna == 1) && fila > 2) {
+				else if ((currentcol == 1) && currentrow > firstrow) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "A"));
 					System.out.print(String.format("%c[%d%s", escCode, rowcol.getMaxColumn(rowcol.getRow()), "C"));
 				}
 				
 			}
 			else if (cr == DELETE) {
+				if (currentcol == 1 && currentrow > firstrow) {
+					System.out.print(String.format("%c[%d%s", escCode, 1, "A"));
+					System.out.print(String.format("%c[%d%s", escCode, rowcol.getMaxColumn(currentrow-1)+1, "G"));
+				}
 				System.out.print(String.format("%c[%d%s", escCode, 1, "D"));
 				System.out.print(String.format("%c[%d%s", escCode, 1, "X"));
+				rowcol.DownColumn();
 
-			} else if (cr == SUPRIMIR) {
+			} 
+			else if (cr == SUPRIMIR) {
 				System.out.print(String.format("%c[%d%s", escCode, 1, "C"));
 				System.out.print(String.format("%c[%d%s", escCode, 1, "X"));
 
-			} else if (cr == HOME) {
+			} 
+			else if (cr == HOME) {
 				System.out.print(String.format("%c[%d%s", escCode, 1, "G"));
-			} else if (cr == END) {
-				System.out.print(String.format("%c[%d%s", escCode, rowcol.getMaxColumn(fila),
+			} 
+			else if (cr == END) {
+				System.out.print(String.format("%c[%d%s", escCode, rowcol.getMaxColumn(currentrow)+1,
 						"G"));
-			} else if (cr == ENTER) {
+			} 
+			else if (cr == ENTER) {
 				System.out.print(String.format("%c[%d%s", escCode, 1, "E"));
 			}
-			/**
-			 * Delete = 127 Home = 27 91 72 End = 27 91 70
-			 */
-
-			/**
-			 * SEQUENCIA RESPOSTA POSICIÓ CURSOR:
-			 * 
-			 * ESC [ X;YR
-			 * 
-			 * ESC --> 27 [ --> 91 X --> X ; --> 59 Y --> Y R --> 82
-			 */
-            
-            //LLEGIM COLUMNA I FILA ACTUAL CADA COP QUE APRETEM TECLA
-            //filacol();
-            //maxims();
-            /*
-             * DEBUGGER PROPI:
-             * Obrir un altre terminal apart de la que utilitzem per executar el programa.
-             * Mirar amb la comana 'ps' quin es el tty del terminal i cambiar el /dev/pts/X de les comanes de sota.
-             * Aixi podem observar tots els paràmetres seguents en temps real: fila,columna,maxfil,maxcol,filainicial.
-             */
-            /*try { 
-                String[] command = { "bash", "-c", "echo fila: " + fila+" columna: "+ columna+" filainicial: "+FILAINICIAL +" > /dev/pts/18" };
-            	InputStream in = Runtime.getRuntime().exec(command).getInputStream();
-        		String[] command1 = { "bash", "-c", "echo maxfila:" + maxfil+" maxcol: "+ maxcol +" > /dev/pts/18" };
-        		InputStream in1 = Runtime.getRuntime().exec(command1).getInputStream();
-            	String[] command2 = { "bash", "-c", "echo ----------------- > /dev/pts/18" };
-            	InputStream in2 = Runtime.getRuntime().exec(command2).getInputStream();
-            }catch(Exception e) {
-            	e.printStackTrace();
-            }
-*/
-            
+			
         }
         return str;   
     }
