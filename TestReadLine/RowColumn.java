@@ -107,8 +107,7 @@ public class RowColumn {
 	 */
 
 	public void setFirstRow() {
-		int row = getRow();
-		map.put(row, 1);
+		map.put(currentrow, 0);
 	}
 
 	/**
@@ -120,11 +119,11 @@ public class RowColumn {
 	 */
 
 	public void AddColumn() {
-		int row = getRow(), maxcol = 0;
-		if (map.containsKey(row)) {
-			maxcol = getMaxColumn(row);
+		int maxcol = -1;
+		if (map.containsKey(currentrow)) {
+			maxcol = getMaxColumn(currentrow);
 		}
-		map.put(row, maxcol + 1);
+		map.put(currentrow, maxcol + 1);
 	}
 
 	/**
@@ -137,12 +136,11 @@ public class RowColumn {
 
 	public void DownColumn() {
 		if (currentrow != getFirstRow() || currentcol != 1) {
-			int row = getRow();
-			int maxcol = getMaxColumn(row);
-			if (maxcol == 1 && row != this.getFirstRow()) {
-				map.remove(row);
+			int maxcol = getMaxColumn(currentrow);
+			if (maxcol == 0) {
+				map.remove(currentrow);
 			} else
-				map.put(row, maxcol - 1);
+				map.put(currentrow, maxcol - 1);
 		}
 	}
 
@@ -179,6 +177,10 @@ public class RowColumn {
 	public int getLastRow() {
 		int lastrow = ((TreeMap<Integer, Integer>) map).lastKey();
 		return lastrow;
+	}
+	
+	public Map<Integer, Integer> printMap() {
+		return map;
 	}
 
 	/**

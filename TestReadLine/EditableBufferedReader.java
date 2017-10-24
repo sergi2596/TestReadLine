@@ -33,8 +33,11 @@ class EditableBufferedReader extends BufferedReader {
 		 * Quan inciem el programa, marquem amb setFirstRow() quina es la
 		 * primera fila de l'editor. A continuació la guardem amb getFirstRow()
 		 */
+		currentrow = rowcol.getRow();
+		currentcol = rowcol.getColumn();
 		rowcol.setFirstRow();
 		int firstrow = rowcol.getFirstRow();
+		//System.out.print("First row: " + firstrow + " Max col: " + rowcol.getMaxColumn(firstrow));
 
 		while (cr != CTRLD) {
 
@@ -110,10 +113,9 @@ class EditableBufferedReader extends BufferedReader {
 				 */
 
 			} else if (cr == RIGHT_ARROW) {
-				if (currentcol <= rowcol.getMaxColumn(currentrow)) {
+				if (currentcol <= rowcol.getMaxColumn(currentrow) && rowcol.getMaxColumn(currentrow) > 0) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "C"));
-				} else if ((currentcol > rowcol.getMaxColumn(currentrow))
-						&& currentrow < rowcol.getLastRow()) {
+				} else if (currentrow != rowcol.getLastRow()) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "E"));
 				}
 
@@ -127,10 +129,11 @@ class EditableBufferedReader extends BufferedReader {
 			} else if (cr == LEFT_ARROW) {
 				if (currentcol > 1) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "D"));
-				} else if ((currentcol == 1) && currentrow > firstrow) {
+				} else if (currentrow > firstrow) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "A"));
-					System.out.print(String.format("%c[%d%s", escCode,
-							rowcol.getMaxColumn(rowcol.getRow()), "C"));
+					if (rowcol.getMaxColumn(currentrow-1) > 0) {
+						System.out.print(String.format("%c[%d%s", escCode, rowcol.getMaxColumn(rowcol.getRow()), "C"));
+					}
 				}
 
 				/**
@@ -143,22 +146,30 @@ class EditableBufferedReader extends BufferedReader {
 				 */
 
 			} else if (cr == DELETE) {
+				
+
 				if (currentcol == 1 && currentrow > firstrow) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "A"));
-					System.out.print(String.format("%c[%d%s", escCode,
-							rowcol.getMaxColumn(currentrow - 1) + 1, "G"));
+					//System.out.print("ROW " + currentrow + " " + rowcol.printMap());
+					System.out.print(String.format("%c[%d%s", escCode, rowcol.getMaxColumn(currentrow-1)+1, "G"));
 				}
-				System.out.print(String.format("%c[%d%s", escCode, 1, "D"));
-				System.out.print(String.format("%c[%d%s", escCode, 1, "X"));
+				else {
+					System.out.print(String.format("%c[%d%s", escCode, 1, "D"));
+					System.out.print(String.format("%c[%d%s", escCode, 1, "X"));
+				}
 				rowcol.DownColumn();
+
+				
 
 				/**
 				 * SUPRIMIR encara NO està implementat correctament
 				 */
 
 			} else if (cr == SUPRIMIR) {
-				System.out.print(String.format("%c[%d%s", escCode, 1, "C"));
-				System.out.print(String.format("%c[%d%s", escCode, 1, "X"));
+				System.out.print(String.format("%c[%d%s", escCode, 1, "P"));
+				if (rowcol.getMaxColumn(currentrow) > 0 && currentcol <= rowcol.getMaxColumn(currentrow)) {
+					rowcol.DownColumn();
+				}
 				
 				/**
 				 * HOME i END són iguals que sempre, molt bàsic 
@@ -176,9 +187,12 @@ class EditableBufferedReader extends BufferedReader {
 				 */
 			} else if (cr == ENTER) {
 				System.out.print(String.format("%c[%d%s", escCode, 1, "E"));
+				rowcol.filacol();
+				rowcol.AddColumn();
 			}
 
 		}
+		System.out.println(rowcol.printMap());
 		return str;
 	}
 
