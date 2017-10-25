@@ -11,11 +11,11 @@ class EditableBufferedReader extends BufferedReader {
 	int currentcol, currentrow;
 	int TOTALCOLS = new ConsoleWidth().getConsoleWidth();
 	RowColumn rowcol = new RowColumn();
-	boolean aux = false;
+	boolean aux = false,sobreescrivint = false;
 	final int UP_ARROW = 300, DOWN_ARROW = 301, RIGHT_ARROW = 302,
 			LEFT_ARROW = 303, SPACE = 32, CTRLD = 4, CTRLS = 19,
 			SUPRIMIR = 295, ESC = 27, CORXET = 91, DELETE = 127, HOME = 305,
-			END = 304, ENTER = 13;
+			END = 304, ENTER = 13, INSERT = 294;
 
 	public EditableBufferedReader(Reader in) {
 		super(in);
@@ -33,6 +33,7 @@ class EditableBufferedReader extends BufferedReader {
 		 * Quan inciem el programa, marquem amb setFirstRow() quina es la
 		 * primera fila de l'editor. A continuació la guardem amb getFirstRow()
 		 */
+		rowcol.filacol();
 		currentrow = rowcol.getRow();
 		currentcol = rowcol.getColumn();
 		rowcol.setFirstRow();
@@ -45,6 +46,7 @@ class EditableBufferedReader extends BufferedReader {
 			 * Cada cop que escrivim, guardem la posició del cursor amb getRow()
 			 * i getCol()
 			 */
+			rowcol.filacol();
 			currentrow = rowcol.getRow();
 			currentcol = rowcol.getColumn();
 			cr = read();
@@ -132,7 +134,7 @@ class EditableBufferedReader extends BufferedReader {
 				} else if (currentrow > firstrow) {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "A"));
 					if (rowcol.getMaxColumn(currentrow-1) > 0) {
-						System.out.print(String.format("%c[%d%s", escCode, rowcol.getMaxColumn(rowcol.getRow()), "C"));
+						System.out.print(String.format("%c[%d%s", escCode, rowcol.getMaxColumn(rowcol.getRow()-1), "C"));
 					}
 				}
 
@@ -156,6 +158,7 @@ class EditableBufferedReader extends BufferedReader {
 				else {
 					System.out.print(String.format("%c[%d%s", escCode, 1, "D"));
 					System.out.print(String.format("%c[%d%s", escCode, 1, "X"));
+					System.out.print(String.format("%c[%d%s", escCode, 1, "P"));
 				}
 				rowcol.DownColumn();
 
@@ -189,10 +192,21 @@ class EditableBufferedReader extends BufferedReader {
 				System.out.print(String.format("%c[%d%s", escCode, 1, "E"));
 				rowcol.filacol();
 				rowcol.AddColumn();
+				
+			} else if (cr == INSERT) {
+				if (sobreescrivint) {
+					System.out.print(String.format("%c[%d%s", escCode, 4, "h")); // insert
+					sobreescrivint = false;
+				}else {
+					System.out.print(String.format("%c[%d%s", escCode, 4, "l")); // sobrescriure
+																				//amb la l es veu que es resetegen parametres
+					sobreescrivint = true;
+				}
+				
 			}
 
 		}
-		System.out.println(rowcol.printMap());
+		//System.out.println(rowcol.printMap());
 		return str;
 	}
 
@@ -220,6 +234,11 @@ class EditableBufferedReader extends BufferedReader {
 					cr = END;
 				} else if (aux2 == 72) {
 					cr = HOME;
+				} else if (aux2 == 50) {
+					aux3 = super.read();
+					if (aux3 == 126) {
+						cr = INSERT;
+					}
 				}
 			}
 		}

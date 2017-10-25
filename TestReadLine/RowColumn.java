@@ -19,7 +19,7 @@ public class RowColumn {
 	final int UP_ARROW = 300, DOWN_ARROW = 301, RIGHT_ARROW = 302,
 			LEFT_ARROW = 303, SPACE = 32, CTRLD = 4, CTRLS = 19,
 			SUPRIMIR = 295, ESC = 27, CORXET = 91, DELETE = 127, HOME = 305,
-			END = 304;
+			END = 304, PUNTICOMA = 11;
 
 	public void filacol() {
 		List<Integer> filacols = new ArrayList<Integer>();
@@ -44,7 +44,7 @@ public class RowColumn {
 				filacols.set(i, filacols.get(i) - 48);
 				i++;
 			}
-			indice = filacols.indexOf(11);
+			indice = filacols.indexOf(PUNTICOMA);
 			longitud = filacols.size();
 			switch (indice) {
 			case 1:
@@ -86,7 +86,7 @@ public class RowColumn {
 	 * @return int columa_actual
 	 */
 	public int getColumn() {
-		filacol();
+		//filacol();
 		return this.currentcol;
 	}
 
@@ -97,7 +97,7 @@ public class RowColumn {
 	 */
 
 	public int getRow() {
-		filacol();
+		//filacol();
 		return this.currentrow;
 	}
 

@@ -1,8 +1,10 @@
+
 import java.io.*;
 
 class TestReadLine {
     
     ConsoleWidth cols = new ConsoleWidth();
+    RowColumn r = new RowColumn();
     static EditableBufferedReader in = new EditableBufferedReader(new InputStreamReader(System.in));
 
     
