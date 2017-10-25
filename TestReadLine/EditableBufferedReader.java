@@ -238,10 +238,6 @@ class EditableBufferedReader extends BufferedReader {
 			}
 
 		}
-<<<<<<< HEAD
-		System.out.print(rowcol.printMap());
-=======
->>>>>>> refs/heads/proves_sergi
 		return str;
 	}
 
