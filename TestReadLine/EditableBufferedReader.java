@@ -192,7 +192,7 @@ class EditableBufferedReader extends BufferedReader {
 			}
 
 		}
-		System.out.println(rowcol.printMap());
+		System.out.print(rowcol.printMap());
 		return str;
 	}
 
