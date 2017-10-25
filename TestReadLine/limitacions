@@ -8,6 +8,22 @@ SOLUCIO: END, HOME i fletxes estan configurades per anar fins MaxCol+1. Si MaxCo
 
 3. Si deixem apretada la fletxa dreta o esquerra i anem massa rapids, l'editor no te temps de procesar-ho i peta.
 
-4. Per borrar una linia ho hem de fer des del final, no podem borrar a mitja linia perque encara no esta implementat això. 
-La tecla SUPRIMIR tampoc està implementada.
+
+
+----- NOVES FUNCIONALITATS -------
+
+1. Multilinia:
+	- Apretar enter a varies linies i deixarles en blanc.
+	- La fila nomes s'elimina si es la ultima (sino es deixa en blanc)
+	
+2. Es pot borrar a meitat de linia
+3. TABULADOR afegit
+4. CTRL+F --> Anar al primer caràcter de tot l'editor
+5. CTRL+L --> Anar al últim caràcter de tot l'editor
+6. CTRL+DELETE --> borra tota la linia:
+	- Si es la ultima, elimina la linia i mou cursor a fila de dalt
+	- Si es una fila del mig, mou cursor pero no elimina la fila
+	- Si es la primera, borra la fila
+	
+
 

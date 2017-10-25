@@ -9,8 +9,10 @@ class TestReadLine {
     public static void main(String[] args) {
         in.setRaw();
         String str= null;
+        //int str = 0;
         try {
                 str = in.readLine();
+               // str = in.read();
             } catch(IOException e) {
                 e.printStackTrace();
             }
