@@ -19,7 +19,7 @@ public class RowColumn {
 	final int UP_ARROW = 300, DOWN_ARROW = 301, RIGHT_ARROW = 302,
 			LEFT_ARROW = 303, SPACE = 32, CTRLD = 4, CTRLS = 19,
 			SUPRIMIR = 295, ESC = 27, CORXET = 91, DELETE = 127, HOME = 305,
-			END = 304;
+			END = 304, PUNTICOMA = 11;
 
 	public void filacol() {
 		List<Integer> filacols = new ArrayList<Integer>();
@@ -44,7 +44,7 @@ public class RowColumn {
 				filacols.set(i, filacols.get(i) - 48);
 				i++;
 			}
-			indice = filacols.indexOf(11);
+			indice = filacols.indexOf(PUNTICOMA);
 			longitud = filacols.size();
 			switch (indice) {
 			case 1:
@@ -86,7 +86,7 @@ public class RowColumn {
 	 * @return int columa_actual
 	 */
 	public int getColumn() {
-		filacol();
+		//filacol();
 		return this.currentcol;
 	}
 
@@ -97,7 +97,7 @@ public class RowColumn {
 	 */
 
 	public int getRow() {
-		filacol();
+		//filacol();
 		return this.currentrow;
 	}
 
@@ -118,12 +118,12 @@ public class RowColumn {
 	 * tant hem de crear una nova clau amb la fila)
 	 */
 
-	public void AddColumn() {
+	public void AddColumn(int ncols) {
 		int maxcol = -1;
 		if (map.containsKey(currentrow)) {
 			maxcol = getMaxColumn(currentrow);
 		}
-		map.put(currentrow, maxcol + 1);
+		map.put(currentrow, maxcol + ncols);
 	}
 
 	/**
@@ -138,12 +138,19 @@ public class RowColumn {
 		if (currentrow != getFirstRow() || currentcol != 1) {
 			int maxcol = getMaxColumn(currentrow);
 			if (maxcol == 0) {
-				map.remove(currentrow);
+				removeRow();
 			} else
 				map.put(currentrow, maxcol - 1);
 		}
 	}
 
+	public void removeRow() {
+		map.remove(currentrow);
+	}
+	
+	public void setRowtoZero() {
+		map.put(currentrow, 0);
+	}
 	/**
 	 * Retorna el numero maxim de columnes d'una fila
 	 * 
@@ -179,7 +186,7 @@ public class RowColumn {
 		return lastrow;
 	}
 	
-	public Map<Integer, Integer> printMap() {
+	public Map<Integer, Integer> getMap() {
 		return map;
 	}
 
