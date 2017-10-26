@@ -4,6 +4,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.FileReader;
 
+/**
+* --------------FINAL VERSION --------------------
+* @author sergi, juanjo
+*
+*/
 public class ConsoleWidth {
 
 	public int getConsoleWidth() {

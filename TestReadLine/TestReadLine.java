@@ -1,5 +1,11 @@
 import java.io.*;
 
+/**
+* --------------FINAL VERSION --------------------
+* @author sergi, juanjo
+*
+*/
+
 class TestReadLine {
     
     ConsoleWidth cols = new ConsoleWidth();

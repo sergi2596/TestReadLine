@@ -6,6 +6,11 @@ import java.io.Reader;
 import java.util.*;
 import java.io.InputStreamReader;
 
+/**
+ * --------------FINAL VERSION --------------------
+ * @author sergi, juanjo
+ *
+ */
 class EditableBufferedReader extends BufferedReader {
 
 	int currentcol, currentrow;
