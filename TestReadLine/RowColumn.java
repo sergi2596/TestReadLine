@@ -5,6 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * ------------_FINAL VERSION ----------
+ * @author sergi, juanjo
+ *
+ */
+
 public class RowColumn {
 
 	/**
